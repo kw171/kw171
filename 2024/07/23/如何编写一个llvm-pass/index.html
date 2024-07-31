@@ -93,7 +93,22 @@
 <p><img src="https://raw.githubusercontent.com/kw171/kw171.github.io/img/3.png" alt="屏幕截图 2024-07-25 115432"></p>
 <p>不过解决也很容易，只要在clion中进入lib&#x2F;support&#x2F;BLAKE3&#x2F;里面的cmakelists.txt，把最后一行和Encode.cpp有关的内容删除即可（虽然我还不知道有什么影响，不过好像没什么影响）</p>
 <p>然后编译完成就可以使用opt将pass用于我们的IR代码上啦</p>
-<h2 id="四-使用pass"><a href="#四-使用pass" class="headerlink" title="四.使用pass"></a>四.使用pass</h2>
+<h2 id="四-使用pass"><a href="#四-使用pass" class="headerlink" title="四.使用pass"></a>四.使用pass</h2><p>先浅浅的写一个c语言的代码，创建成hello_clang.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">test_hello1</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;test_hello1\n&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">test_hello2</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;test_hello2\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc ,<span class="type">char</span> <span class="type">const</span> *argv[])</span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;hello clang\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比如这样子，然后用clang进行编译，命令如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang -O3 -emit-llvm hello_clang.c -S -o hello_clang.ll</span><br></pre></td></tr></table></figure>
+
+<p>注意这个-O3一定要加上，它对.ll文件进行了优化，如果不加上，面临的就是</p>
+<p><img src="https://raw.githubusercontent.com/kw171/kw171.github.io/img/5.png" alt="屏幕截图 2024-07-30 124224"></p>
+<p><del>就是不管怎么样你编译出来的东西都没有办法被可爱的F.getname()识别，不管怎么样都抓耳挠腮但是官方给的.ll却可以正常运行让你怀疑你是不是有问题</del></p>
+<p>总之当时被困了蛮久的，后来是在知乎上的某篇文章启发了我</p>
+<p>然后后面就是正常的啦</p>
+<p>用了两种方式去运行了pass，一种是官方文档描述的</p>
+<p>![](<a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/kw171/kw171.github.io/img/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE">https://raw.githubusercontent.com/kw171/kw171.github.io/img/屏幕截图</a> 2024-07-31 175215.png)</p>
+<p>还有一种是老版的就是搞个.so文件(不过说实话感觉有点没有必要)</p>
+<p><img src="https://raw.githubusercontent.com/kw171/kw171.github.io/img/6.png" alt="屏幕截图 2024-07-31 175148"></p>
+
         </article>
         <section class="post-near">
             <ul>
